@@ -19,4 +19,10 @@ float64 torque
 
 ```
 
-### ``
+### `MotorStateMultiArray.msg`
+
+```
+
+MotorState[] data
+
+```

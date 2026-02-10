@@ -12,6 +12,7 @@
   <depend>rclcpp</depend>
   <depend>gate_msgs</depend>
   <depend>micros_common_type</depend>
+  <depend>motor_manager</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

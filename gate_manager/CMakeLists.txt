@@ -16,12 +16,14 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(gate_msgs REQUIRED)
 find_package(micros_common_type REQUIRED)
+find_package(motor_manager REQUIRED)
 
-include_directories(include ${micros_common_type_INCLUDE_DIRS})
+include_directories(include ${micros_common_type_INCLUDE_DIRS} ${motor_manager_INCLUDE_DIRS})
 
 set(motor_manager_dependencies "rclcpp" "gate_msgs")
 add_executable(motor_manager_node src/motor_manager_node.cpp)
 ament_target_dependencies(motor_manager_node ${motor_manager_dependencies})
+target_link_libraries(motor_manager_node motor_manager_library)
 install(TARGETS motor_manager_node DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
