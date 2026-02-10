@@ -2,7 +2,6 @@
 #define GATE_MANAGER_MOTOR_MANAGER_NODE_HPP_
 
 #include <string>
-#include <chrono>
 #include <memory>
 
 #include <rclcpp/rclcpp.hpp>

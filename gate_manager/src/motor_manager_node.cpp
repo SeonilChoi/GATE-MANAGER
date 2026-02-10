@@ -9,8 +9,6 @@
 
 #include "gate_manager/motor_manager_node.hpp"
 
-using namespace std::chrono_literals;
-
 namespace micros {
 
 inline constexpr std::size_t MAX_SAFE_STACK = 8 * 1024;
