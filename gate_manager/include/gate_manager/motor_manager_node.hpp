@@ -1,8 +1,10 @@
 #ifndef GATE_MANAGER_MOTOR_MANAGER_NODE_HPP_
 #define GATE_MANAGER_MOTOR_MANAGER_NODE_HPP_
 
+#include <atomic>
 #include <string>
 #include <memory>
+#include <thread>
 
 #include <rclcpp/rclcpp.hpp>
 #include <gate_msgs/msg/motor_state_multi_array.hpp>
@@ -18,7 +20,7 @@ public:
     using MotorStateMultiArray = gate_msgs::msg::MotorStateMultiArray;
 
     explicit MotorManagerNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
-    virtual ~MotorManagerNode() = default;
+    virtual ~MotorManagerNode() override;
 
 private:
     void motor_command_callback(const MotorStateMultiArray::SharedPtr msg);
@@ -34,6 +36,8 @@ private:
     std::unique_ptr<MotorManager> motor_manager_;
 
     motor_state_gate_t motor_state_gate_;
+    std::atomic<bool> is_running_{false};
+    std::thread rt_thread_;
 };
 
 } // namespace micros

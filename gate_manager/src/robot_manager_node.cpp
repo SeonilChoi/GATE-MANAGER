@@ -26,7 +26,7 @@ RobotManagerNode::RobotManagerNode(const rclcpp::NodeOptions& options)
 
 void RobotManagerNode::timer_callback()
 {
-
+    
 }
 
 void RobotManagerNode::motor_state_callback(const MotorStateMultiArray::SharedPtr msg)

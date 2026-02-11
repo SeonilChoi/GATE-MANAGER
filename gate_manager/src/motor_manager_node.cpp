@@ -35,6 +35,19 @@ MotorManagerNode::MotorManagerNode(const rclcpp::NodeOptions& options)
     config_file_ = this->declare_parameter<std::string>("config_file", "");
     
     motor_manager_ = std::make_unique<MotorManager>(config_file_);
+
+    is_running_.store(true, std::memory_order_relaxed);
+    rt_thread_ = std::thread([this]() { this->loop(); });
+    RCLCPP_INFO(this->get_logger(), "RT thread started");
+}
+
+~MotorManagerNode() override 
+{
+    is_running_.store(false, std::memory_order_relaxed);
+    if (rt_thread_.joinable()) {
+        rt_thread_.join();
+    }
+    RCLCPP_INFO(this->get_logger(), "RT thread joined");
 }
 
 void MotorManagerNode::motor_command_callback(const MotorStateMultiArray::SharedPtr msg)
@@ -80,8 +93,11 @@ void MotorManagerNode::loop()
     const uint32_t period = motor_manager_->period();
     const uint8_t size = motor_manager_->number_of_slaves();
 
-    while (rclcpp::ok()) {
+    while (rclcpp::ok() && is_running_.load(std::memory_order_relaxed)) {
         const int ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &wakeup_time, nullptr);
+        if (ret == EINTR) {
+            continue;
+        }
         if (ret) {
             RCLCPP_ERROR(this->get_logger(), "clock_nanosleep failed: %s", std::strerror(errno));
             break;
