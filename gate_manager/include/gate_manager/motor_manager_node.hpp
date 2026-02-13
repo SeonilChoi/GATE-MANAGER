@@ -15,11 +15,11 @@
 namespace micros {
 
 class MotorManagerNode : public rclcpp::Node {
-
 public:
     using MotorStateMultiArray = gate_msgs::msg::MotorStateMultiArray;
 
     explicit MotorManagerNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
+    
     virtual ~MotorManagerNode() override;
 
 private:
@@ -30,13 +30,17 @@ private:
     void loop();
 
     rclcpp::Subscription<MotorStateMultiArray>::SharedPtr motor_command_subscriber_;
+    
     rclcpp::Publisher<MotorStateMultiArray>::SharedPtr motor_state_publisher_;
 
     std::string config_file_;
+    
     std::unique_ptr<MotorManager> motor_manager_;
 
     motor_state_gate_t motor_state_gate_;
+    
     std::atomic<bool> is_running_{false};
+    
     std::thread rt_thread_;
 };
 

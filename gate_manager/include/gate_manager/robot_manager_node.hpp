@@ -13,12 +13,12 @@
 namespace micros {
 
 class RobotManagerNode : public rclcpp::Node {
-
 public:
     using MotorStateMultiArray = gate_msgs::msg::MotorStateMultiArray;
 
     explicit RobotManagerNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
-    virtual ~RobotManagerNode() = default;
+    
+    virtual ~RobotManagerNode() override;
 
 private:
     void timer_callback();
@@ -26,10 +26,13 @@ private:
     void motor_state_callback(const MotorStateMultiArray::SharedPtr msg);
 
     rclcpp::TimerBase::SharedPtr timer_;
+    
     rclcpp::Subscription<MotorStateMultiArray>::SharedPtr motor_state_subscriber_;
+    
     rclcpp::Publisher<MotorStateMultiArray>::SharedPtr motor_command_publisher_;
 
     std::string config_file_;
+    
     std::unique_ptr<RobotManager> robot_manager_;
 
     uint8_t size_{0};

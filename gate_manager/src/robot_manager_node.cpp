@@ -26,18 +26,20 @@ RobotManagerNode::RobotManagerNode(const rclcpp::NodeOptions& options)
 
 void RobotManagerNode::timer_callback()
 {
-    
+    uint8_t size = 0;
+    motor_state_t cmds[MAX_CONTROLLER_SIZE]{};
+    robot_manager_->control(cmds, size);
+
+    MotorStateMultiArray::SharedPtr msg = std::make_shared<MotorStateMultiArray>();
+    convert_to_ros_message<MotorStateMultiArray>(cmds, size, *msg);
+    motor_command_publisher_->publish(*msg);
 }
 
 void RobotManagerNode::motor_state_callback(const MotorStateMultiArray::SharedPtr msg)
 {
-    size_ = static_cast<uint8_t>(msg->data.size());
-    for (uint8_t i = 0; i < size_; ++i) {
-        states_[i].id = msg->data[i].id;
-        states_[i].position = msg->data[i].position;
-        states_[i].velocity = msg->data[i].velocity;
-        states_[i].torque = msg->data[i].torque;
-    }
+    motor_state_t states[MAX_CONTROLLER_SIZE]{};
+    convert_from_ros_message<MotorStateMultiArray>(*msg, states);
+    robot_manager_->update(states);
 }
 
 } // namespace micros
