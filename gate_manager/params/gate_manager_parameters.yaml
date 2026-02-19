@@ -1,0 +1,3 @@
+motor_manager_node:
+  ros__parameters:
+    config_file: C:\Users\최선일\Documents\MICROS\src\manager\motor_manager\config\example.yaml

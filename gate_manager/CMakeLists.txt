@@ -11,6 +11,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_options(-g)
 endif()
 
+install(DIRECTORY launch params DESTINATION share/${PROJECT_NAME})
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)

@@ -91,7 +91,7 @@ void MotorManagerNode::loop()
     uint64_t last_count = 0;
     
     const uint32_t period = motor_manager_->period();
-    const uint8_t size = motor_manager_->number_of_slaves();
+    const uint8_t size = motor_manager_->number_of_controllers();
 
     while (rclcpp::ok() && is_running_.load(std::memory_order_relaxed)) {
         const int ret = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &wakeup_time, nullptr);

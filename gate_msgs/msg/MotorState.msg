@@ -1,6 +1,6 @@
 uint8[] target_id
 uint8 number_of_targets
-uint8 id
+uint8 controller_idx
 uint16 controlword
 uint16 statusword
 uint16 errorcode
