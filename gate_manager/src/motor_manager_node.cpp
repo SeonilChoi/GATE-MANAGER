@@ -41,7 +41,7 @@ MotorManagerNode::MotorManagerNode(const rclcpp::NodeOptions& options)
     RCLCPP_INFO(this->get_logger(), "RT thread started");
 }
 
-~MotorManagerNode() override 
+MotorManagerNode::~MotorManagerNode()
 {
     is_running_.store(false, std::memory_order_relaxed);
     if (rt_thread_.joinable()) {
@@ -52,9 +52,10 @@ MotorManagerNode::MotorManagerNode(const rclcpp::NodeOptions& options)
 
 void MotorManagerNode::motor_command_callback(const MotorStateMultiArray::SharedPtr msg)
 {
+    const uint8_t size = static_cast<uint8_t>(msg->data.size());
     motor_state_t data[MAX_CONTROLLER_SIZE]{};
-    convert_from_ros_message<MotorStateMultiArray>(*msg, data);
-    motor_state_gate_.write(data, static_cast<uint8_t>(msg->data.size()));
+    convert_from_ros_message<MotorStateMultiArray>(*msg, size, data);
+    motor_state_gate_.write(data, size);
 }
 
 void MotorManagerNode::setup()
@@ -105,11 +106,12 @@ void MotorManagerNode::loop()
 
         motor_state_t states[MAX_CONTROLLER_SIZE]{};
         motor_state_t cmds[MAX_CONTROLLER_SIZE]{};
+        uint8_t cmd_size = 0;
 
-        (void)motor_state_gate_.read(cmds, size, last_count);
+        (void)motor_state_gate_.read(cmds, cmd_size, last_count);
 
-        const bool stop = !rclcpp::ok();
-        if (motor_manager_->update(stop, states, cmds)) {
+        const bool is_stop = !rclcpp::ok();
+        if (motor_manager_->update(is_stop, states, cmds, cmd_size)) {
             break;
         }
 

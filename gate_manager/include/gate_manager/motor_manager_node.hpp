@@ -20,7 +20,7 @@ public:
 
     explicit MotorManagerNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
     
-    virtual ~MotorManagerNode() override;
+    ~MotorManagerNode();
 
 private:
     void motor_command_callback(const MotorStateMultiArray::SharedPtr msg);

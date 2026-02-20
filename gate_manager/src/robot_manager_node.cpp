@@ -37,9 +37,10 @@ void RobotManagerNode::timer_callback()
 
 void RobotManagerNode::motor_state_callback(const MotorStateMultiArray::SharedPtr msg)
 {
+    uint8_t size = static_cast<uint8_t>(msg->data.size());
     motor_state_t states[MAX_CONTROLLER_SIZE]{};
-    convert_from_ros_message<MotorStateMultiArray>(*msg, states);
-    robot_manager_->update(states);
+    convert_from_ros_message<MotorStateMultiArray>(*msg, size, states);
+    robot_manager_->update(states, size);
 }
 
 } // namespace micros
