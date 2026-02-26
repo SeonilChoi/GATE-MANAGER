@@ -7,6 +7,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gate_msgs/msg/robot_state_multi_array.hpp>
+#include <std_msgs/msg/uint8.hpp>
 
 #include "micros_common_type/micros_common_type.hpp"
 
@@ -15,6 +16,7 @@ namespace micros {
 class RobotManagerNode : public rclcpp::Node {
 public:
     using MotorStateMultiArray = gate_msgs::msg::MotorStateMultiArray;
+    using RobotControlState = std_msgs::msg::UInt8;
 
     explicit RobotManagerNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions());
     
@@ -24,6 +26,8 @@ private:
     void timer_callback();
 
     void motor_state_callback(const MotorStateMultiArray::SharedPtr msg);
+
+    void robot_control_state_callback(const RobotControlState::SharedPtr msg);
 
     rclcpp::TimerBase::SharedPtr timer_;
     

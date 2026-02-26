@@ -15,6 +15,13 @@ RobotManagerNode::RobotManagerNode(const rclcpp::NodeOptions& options)
         }
     );
 
+    robot_control_state_subscriber_ = this->create_subscription<RobotControlState>(
+        "/robot_control_state", rclcpp::QoS(1).best_effort(),
+        [this](const RobotControlState::SharedPtr msg) {
+            robot_control_state_callback(msg);
+        }
+    );
+
     motor_command_publisher_ = this->create_publisher<MotorStateMultiArray>(
         "/motor_command", rclcpp::QoS(1).best_effort()
     );
@@ -41,6 +48,11 @@ void RobotManagerNode::motor_state_callback(const MotorStateMultiArray::SharedPt
     motor_state_t states[MAX_CONTROLLER_SIZE]{};
     convert_from_ros_message<MotorStateMultiArray>(*msg, size, states);
     robot_manager_->update(states, size);
+}
+
+void RobotManagerNode::robot_control_state_callback(const RobotControlState::SharedPtr msg)
+{
+    robot_manager_->set_robot_control_state(msg->data);
 }
 
 } // namespace micros
